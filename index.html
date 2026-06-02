@@ -2775,7 +2775,7 @@
             $('#themeToggle').on('click', function () {
                 setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
             });
-            $('#ctaBtn').on('click', function () { window.open('https://k3s.com/contact-us/', '_blank'); });
+            $('#ctaBtn').on('click', function () { window.open('https://k3s.com/solutions-1/', '_blank'); });
             $('#copyBtn').on('click', function () {
                 const txt = resultText(), done = () => { $('#copiedMsg').addClass('show'); setTimeout(() => $('#copiedMsg').removeClass('show'), 1800); };
                 if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done).catch(done); }
