@@ -1746,6 +1746,272 @@
             font-weight: 600
         }
 
+        /* ===== SCALE WALL: the "now do this 50x" overwhelm ===== */
+        .scalewall {
+            margin-top: 14px;
+            border: 1px solid var(--line-strong);
+            border-radius: var(--r-lg);
+            background: var(--card-2);
+            overflow: hidden
+        }
+
+        .sw-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--line);
+            background: var(--ghead-bg);
+            color: var(--ghead-fg)
+        }
+
+        .sw-bar .sw-lhs .title {
+            font-family: "Hanken Grotesk", sans-serif;
+            font-weight: 600;
+            font-size: .86rem;
+            letter-spacing: .01em;
+            color: var(--ghead-fg)
+        }
+
+        .sw-bar .sw-lhs .sub {
+            font-family: "Hanken Grotesk", sans-serif;
+            font-weight: 500;
+            font-size: .72rem;
+            color: var(--ghead-soft);
+            margin-top: 2px
+        }
+
+        .sw-rhs {
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .sw-bar .pending {
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 700;
+            font-size: .82rem;
+            color: var(--ghead-fg);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap
+        }
+
+        .sw-bar .pending .num {
+            color: var(--bad);
+            font-size: .98rem
+        }
+
+        .sw-bar .pending .dotpulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--bad);
+            animation: swpulse 1.4s var(--ease) infinite
+        }
+
+        .sw-stop {
+            font-family: "Hanken Grotesk", sans-serif;
+            font-weight: 600;
+            font-size: .76rem;
+            color: var(--ghead-fg);
+            background: transparent;
+            border: 1px solid var(--ghead-soft);
+            border-radius: var(--r-pill);
+            padding: 4px 13px 4px 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background .2s var(--ease), border-color .2s var(--ease)
+        }
+
+        .sw-stop svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0
+        }
+
+        .sw-stop:hover {
+            background: rgba(255, 255, 255, .12)
+        }
+
+        .sw-stop:focus-visible {
+            outline: 2px solid var(--machine);
+            outline-offset: 2px
+        }
+
+        @keyframes swpulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .35
+            }
+        }
+
+        .sw-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            padding: 12px;
+            position: relative
+        }
+
+        .sw-tile {
+            position: relative;
+            border: 1px solid var(--line);
+            border-radius: var(--r-sm);
+            background: var(--card);
+            padding: 7px 5px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            min-height: 62px;
+            transition: background .6s var(--ease), border-color .6s var(--ease)
+        }
+
+        .sw-tile .ti {
+            width: 17px;
+            height: 17px;
+            color: var(--ink-soft);
+            opacity: .7
+        }
+
+        .sw-tile .ti svg {
+            width: 17px;
+            height: 17px
+        }
+
+        .sw-tile .q {
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 700;
+            font-size: .82rem;
+            line-height: 1;
+            color: var(--machine);
+            transition: color .6s var(--ease)
+        }
+
+        .sw-tile .dem {
+            font-family: "JetBrains Mono", monospace;
+            font-size: .58rem;
+            color: var(--ink-faint);
+            line-height: 1
+        }
+
+        .sw-tile.flash-out {
+            background: color-mix(in srgb, var(--bad) 8%, var(--card));
+            border-color: color-mix(in srgb, var(--bad) 45%, var(--line))
+        }
+
+        .sw-tile.flash-out .q {
+            color: color-mix(in srgb, var(--bad) 75%, var(--ink))
+        }
+
+        .sw-tile.flash-over {
+            background: color-mix(in srgb, var(--human) 8%, var(--card));
+            border-color: color-mix(in srgb, var(--human) 35%, var(--line))
+        }
+
+        .sw-tile.flash-over .q {
+            color: color-mix(in srgb, var(--human) 78%, var(--ink))
+        }
+
+        .sw-tile.mine {
+            border-color: var(--machine);
+            box-shadow: 0 0 0 1px var(--machine)
+        }
+
+        .sw-tile.mine::after {
+            content: "YOURS";
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: "Hanken Grotesk", sans-serif;
+            font-size: .46rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: #fff;
+            background: var(--machine);
+            padding: 1px 5px;
+            border-radius: var(--r-pill);
+            white-space: nowrap
+        }
+
+        .sw-conclude {
+            border-top: 1px solid var(--line);
+            padding: 18px 20px 20px;
+            background: var(--machine-bg);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity .5s var(--ease), max-height .5s var(--ease), padding .5s var(--ease)
+        }
+
+        .sw-conclude.show {
+            opacity: 1;
+            max-height: 240px
+        }
+
+        .sw-conclude .big {
+            font-family: "Fraunces", serif;
+            font-weight: 900;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: var(--ink);
+            line-height: 1.18;
+            margin-bottom: 7px
+        }
+
+        .sw-conclude .big b {
+            font-weight: 900
+        }
+
+        .sw-conclude .small {
+            font-size: .9rem;
+            color: var(--ink-soft)
+        }
+
+        .sw-conclude .small b {
+            color: var(--machine);
+            font-weight: 600
+        }
+
+        @media (max-width:640px) {
+            .sw-grid {
+                grid-template-columns: repeat(6, 1fr)
+            }
+
+            .sw-tile {
+                min-height: 54px
+            }
+
+            .sw-tile.mine::after {
+                font-size: .42rem
+            }
+
+            .sw-rhs {
+                gap: 10px
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sw-bar .pending .dotpulse {
+                animation: none
+            }
+
+            .sw-conclude {
+                transition: none
+            }
+        }
+
         .actions {
             display: flex;
             gap: 11px;
@@ -2251,6 +2517,30 @@
                     <h3>And that was the easy version.</h3>
                     <p id="scaleBody">&mdash;</p>
                 </div>
+
+                <div class="scalewall" id="scaleWall" aria-hidden="true">
+                    <div class="sw-bar">
+                        <div class="sw-lhs">
+                            <div class="title">Every product. Every month. All at once.</div>
+                            <div class="sub">And many are reordered weekly &mdash; or several times a week.</div>
+                        </div>
+                        <div class="sw-rhs">
+                            <span class="pending"><span class="dotpulse"></span>Decisions pending: <span class="num"
+                                    id="swPending">0</span></span>
+                            <button class="sw-stop" id="swStop" type="button" aria-label="Pause"><svg
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="7" y="6" width="3.4" height="12" rx="1" />
+                                    <rect x="13.6" y="6" width="3.4" height="12" rx="1" />
+                                </svg><span>Pause</span></button>
+                        </div>
+                    </div>
+                    <div class="sw-grid" id="swGrid"></div>
+                    <div class="sw-conclude" id="swConclude">
+                        <div class="big" id="swFreezeBig">&mdash;</div>
+                        <div class="small">A real buyer faces this <b>every single day</b> &mdash; which is exactly what
+                            an automated system is built to handle.</div>
+                    </div>
+                </div>
                 <div class="actions">
                     <button class="btn" id="ctaBtn">See how K3S does it &rarr;</button>
                     <button class="btn ghost" id="copyBtn">Copy results</button>
@@ -2483,7 +2773,7 @@
             $('#lastSold').hide(); $('#lastSoldV').html('— <span class="u">units</span>');
             $('#cardYou,#cardBot').removeClass('win'); $('#legBot').hide();
             chartRender([], null);
-            $('#reveal').hide();
+            $('#reveal').hide(); clearScaleWall();
             $('body').addClass('playing');
         }
 
@@ -2662,6 +2952,7 @@
 
             window.GAME_RESULT = buildResultPayload(you, bot, botRows);
             $('#reveal').show();
+            renderScaleWall(decisions);
             $('html,body').animate({ scrollTop: $('#reveal').offset().top - 16 }, 350);
         }
         function fillCard(who, s) {
@@ -2707,6 +2998,87 @@
                     + '<td class="c-carry">' + carryTxt + '</td></tr>';
             }
             $('#cledgerBody').html(h);
+        }
+
+        /* ===================== SCALE WALL =====================
+           The closing gut-punch: take the player's single product and surround it
+           with ~50 more, each a live tile demanding an order. Demand ticks, tiles
+           flash stockout (red) / overstock (amber), and a "decisions pending"
+           counter climbs faster than any human could clear it. After ~5s it freezes
+           under a line that drives the point home. Pure theatre — no interactivity. */
+        let swInterval = null, swState = null;
+        function clearScaleWall() {
+            if (swInterval) { clearInterval(swInterval); swInterval = null; }
+            swState = null;
+        }
+        function swTick() {
+            if (!swState) return;
+            const { $tiles, tiles, total } = swState;
+            const n = 3 + Math.floor(Math.random() * 4);   // a gentle handful per tick
+            for (let k = 0; k < n; k++) {
+                const idx = Math.floor(Math.random() * total);
+                const $t = $tiles.eq(idx);
+                const lam = tiles[idx].lambda;
+                const dem = Math.max(0, Math.round(lam * (0.4 + Math.random() * 1.3)));
+                const ord = Math.max(0, Math.round(lam * (0.5 + Math.random() * 1.1)));
+                $t.find('.dem').text('d' + dem);
+                $t.find('.q').text(ord);
+                $t.removeClass('flash-out flash-over');
+                const r = Math.random();
+                if (r < 0.14) $t.addClass('flash-out');
+                else if (r < 0.26) $t.addClass('flash-over');
+                swState.pending++;
+            }
+            swState.ticks++;
+            $('#swPending').text((swState.pending + swState.ticks * 3).toLocaleString('en-US'));
+        }
+        function swPlay() {
+            if (!swState || swInterval) return;
+            swInterval = setInterval(swTick, 300);
+            $('#swStop').removeClass('paused').attr('aria-label', 'Pause').html(swIconPause);
+        }
+        function swPause() {
+            if (swInterval) { clearInterval(swInterval); swInterval = null; }
+            $('#swStop').addClass('paused').attr('aria-label', 'Play').html(swIconPlay);
+        }
+        function swToggle() { swInterval ? swPause() : swPlay(); }
+        const swIconPause = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="6" width="3.4" height="12" rx="1"/><rect x="13.6" y="6" width="3.4" height="12" rx="1"/></svg><span>Pause</span>';
+        const swIconPlay = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg><span>Play</span>';
+
+        function renderScaleWall(playerDecisions) {
+            clearScaleWall();
+            const TOTAL = 50, MINE = 17; // player's tile sits mid-grid
+            const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const $grid = $('#swGrid');
+            $grid.find('.sw-tile').remove();
+            const tiles = [];
+            let html = '';
+            for (let i = 0; i < TOTAL; i++) {
+                const isMine = i === MINE;
+                const p = isMine ? RC.product : PRODUCTS[i % PRODUCTS.length];
+                const dem0 = Math.max(0, Math.round(p.lambda * (0.6 + Math.random() * 0.9)));
+                const ord0 = Math.max(0, Math.round(p.lambda * (0.5 + Math.random() * 1.1)));
+                html += '<div class="sw-tile' + (isMine ? ' mine' : '') + '" data-i="' + i + '">'
+                    + '<span class="ti">' + icon(ICONS[p.icon]) + '</span>'
+                    + '<span class="q">' + ord0 + '</span>'
+                    + '<span class="dem">d' + dem0 + '</span></div>';
+                tiles.push({ lambda: p.lambda });
+            }
+            $grid.append(html);
+            const $tiles = $grid.find('.sw-tile');
+            swState = { $tiles, tiles, total: TOTAL, pending: TOTAL, ticks: 0 };
+            $('#swPending').text(TOTAL.toLocaleString('en-US'));
+
+            // The takeaway is shown right away and stays — it isn't a reward for stopping.
+            const perYear = TOTAL * 12;
+            $('#swFreezeBig').html('You made <b style="color:var(--machine)">' + playerDecisions
+                + '</b> decisions for <b style="color:var(--machine)">one</b> product.<br>This is <b>' + TOTAL
+                + '</b> products \u2014 already <b style="color:var(--bad)">' + perYear.toLocaleString('en-US')
+                + '+</b> calls a year, and more if you reorder weekly.');
+            $('#swConclude').addClass('show');
+
+            if (reduce) { swPause(); return; }  // honor reduced-motion: static wall, Play available
+            swPlay();
         }
         function buildResultPayload(you, bot, botRows) {
             return {
@@ -2760,7 +3132,7 @@
             $('html,body').animate({ scrollTop: 0 }, 200);
         }
         function backToSelect() {
-            $('body').removeClass('playing');
+            $('body').removeClass('playing'); clearScaleWall();
             $('#gameScreen').hide(); $('#selectScreen').show();
             $('html,body').animate({ scrollTop: 0 }, 200);
         }
@@ -2791,6 +3163,7 @@
             $('#changeBtn').on('click', backToSelect);
             $('#switchBtn').on('click', backToSelect);
             $('#againBtn').on('click', newGame);
+            $('#swStop').on('click', swToggle);
 
             $('#submitBtn').on('click', function () { commitMonth(getOrderVal()); });
             $('#orderInput').on('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); commitMonth(getOrderVal()); } });
