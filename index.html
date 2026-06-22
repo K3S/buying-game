@@ -2012,6 +2012,83 @@
             }
         }
 
+        /* ===== Floating "more below" scroll cue ===== */
+        .scrollcue {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%) translateY(14px);
+            z-index: 60;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px 9px 18px;
+            border: none;
+            border-radius: var(--r-pill);
+            background: var(--btn-bg);
+            color: var(--btn-fg);
+            font-family: "Hanken Grotesk", sans-serif;
+            font-weight: 600;
+            font-size: .85rem;
+            letter-spacing: .01em;
+            cursor: pointer;
+            box-shadow: var(--shadow-pop);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s var(--ease), transform .3s var(--ease)
+        }
+
+        .scrollcue.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0)
+        }
+
+        .scrollcue svg {
+            width: 16px;
+            height: 16px;
+            animation: cuebob 1.6s var(--ease) infinite
+        }
+
+        .scrollcue:hover {
+            background: var(--btn-bg-h)
+        }
+
+        .scrollcue:focus-visible {
+            outline: 2px solid var(--machine);
+            outline-offset: 3px
+        }
+
+        @keyframes cuebob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(3px)
+            }
+        }
+
+        @media (max-width:640px) {
+            .scrollcue {
+                bottom: 16px;
+                font-size: .8rem;
+                padding: 8px 14px 8px 16px
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scrollcue svg {
+                animation: none
+            }
+
+            .scrollcue {
+                transition: opacity .3s linear
+            }
+        }
+
         .actions {
             display: flex;
             gap: 11px;
@@ -2521,7 +2598,7 @@
                 <div class="scalewall" id="scaleWall" aria-hidden="true">
                     <div class="sw-bar">
                         <div class="sw-lhs">
-                            <div class="title">Every product. Every Day. Every month. All at once.</div>
+                            <div class="title">Every product. Every month. All at once.</div>
                             <div class="sub">And many are reordered weekly &mdash; or several times a week.</div>
                         </div>
                         <div class="sw-rhs">
@@ -2556,6 +2633,14 @@
             <div><a href="https://k3s.com/" target="_blank" rel="noopener">www.k3s.com</a></div>
         </footer>
     </div>
+
+    <button class="scrollcue" id="scrollCue" type="button" aria-label="Scroll down for more">
+        <span class="sc-txt">More below</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6" />
+        </svg>
+    </button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
@@ -2774,6 +2859,7 @@
             $('#cardYou,#cardBot').removeClass('win'); $('#legBot').hide();
             chartRender([], null);
             $('#reveal').hide(); clearScaleWall();
+            swCueActive = false; updateScrollCue();
             $('body').addClass('playing');
         }
 
@@ -2954,6 +3040,8 @@
             $('#reveal').show();
             renderScaleWall(decisions);
             $('html,body').animate({ scrollTop: $('#reveal').offset().top - 16 }, 350);
+            swCueActive = true;
+            setTimeout(updateScrollCue, 420);   // after the auto-scroll settles
         }
         function fillCard(who, s) {
             $('#' + who + 'Profit').text(fmt$(s.profit));
@@ -3000,12 +3088,29 @@
             $('#cledgerBody').html(h);
         }
 
+        /* ===================== SCROLL CUE ===================== */
+        let swCueActive = false;
+        function updateScrollCue() {
+            const $cue = $('#scrollCue');
+            if (!swCueActive || !$('#reveal').is(':visible')) { $cue.removeClass('show'); return; }
+            const scrolled = window.scrollY || window.pageYOffset || 0;
+            const viewport = window.innerHeight || document.documentElement.clientHeight;
+            const docH = document.documentElement.scrollHeight;
+            const remaining = docH - (scrolled + viewport);
+            // show while there's a meaningful amount still below the fold
+            if (remaining > 120) $cue.addClass('show'); else $cue.removeClass('show');
+        }
+        function nudgeScroll() {
+            const viewport = window.innerHeight || 600;
+            $('html,body').animate({ scrollTop: (window.scrollY || window.pageYOffset || 0) + viewport * 0.82 }, 360);
+        }
+
         /* ===================== SCALE WALL =====================
            The closing gut-punch: take the player's single product and surround it
-           with ~50 more, each a live tile demanding an order. Demand ticks, tiles
-           flash stockout (red) / overstock (amber), and a "decisions pending"
-           counter climbs faster than any human could clear it. After ~5s it freezes
-           under a line that drives the point home. Pure theatre — no interactivity. */
+           with ~50 more, each a live tile demanding an order. Demand ticks and tiles
+           gently flash stockout (red) / overstock (amber) on an endless loop the
+           player can play/pause, while a "decisions pending" counter climbs. The
+           takeaway line sits below, driving home that one product is hard enough. */
         let swInterval = null, swState = null;
         function clearScaleWall() {
             if (swInterval) { clearInterval(swInterval); swInterval = null; }
@@ -3074,7 +3179,7 @@
             $('#swFreezeBig').html('You made <b style="color:var(--machine)">' + playerDecisions
                 + '</b> decisions for <b style="color:var(--machine)">one</b> product.<br>This is <b>' + TOTAL
                 + '</b> products \u2014 already <b style="color:var(--bad)">' + perYear.toLocaleString('en-US')
-                + '+</b> decisions a year, and more if you reorder weekly.');
+                + '+</b> calls a year, and more if you reorder weekly.');
             $('#swConclude').addClass('show');
 
             if (reduce) { swPause(); return; }  // honor reduced-motion: static wall, Play available
@@ -3133,6 +3238,7 @@
         }
         function backToSelect() {
             $('body').removeClass('playing'); clearScaleWall();
+            swCueActive = false; updateScrollCue();
             $('#gameScreen').hide(); $('#selectScreen').show();
             $('html,body').animate({ scrollTop: 0 }, 200);
         }
@@ -3164,6 +3270,8 @@
             $('#switchBtn').on('click', backToSelect);
             $('#againBtn').on('click', newGame);
             $('#swStop').on('click', swToggle);
+            $('#scrollCue').on('click', nudgeScroll);
+            $(window).on('scroll resize', updateScrollCue);
 
             $('#submitBtn').on('click', function () { commitMonth(getOrderVal()); });
             $('#orderInput').on('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); commitMonth(getOrderVal()); } });
